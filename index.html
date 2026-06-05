@@ -2419,10 +2419,18 @@ function showSeason(id,btn){
 
 // Hero slider
 let heroIdx = 0;
+const heroVideo = () => document.querySelector('#hero-slides video');
 function heroGoTo(idx) {
   heroIdx = idx;
   document.getElementById('hero-slides').style.transform = 'translateX(-' + (idx * 50) + '%)';
   document.querySelectorAll('.hero-slider-dot').forEach((d,i) => d.classList.toggle('active', i === idx));
+  const v = heroVideo();
+  if (idx === 1) {
+    v.currentTime = 0;
+    v.play().catch(() => {});
+  } else {
+    v.pause();
+  }
 }
 function heroSlide(dir) {
   heroGoTo((heroIdx + dir + 2) % 2);

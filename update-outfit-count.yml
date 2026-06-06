@@ -1,0 +1,66 @@
+name: Update Outfit Count
+
+on:
+  push:
+    paths:
+      - 'outfit_2026.html'
+
+jobs:
+  update-count:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Compute count and update HTML
+        run: |
+          python3 - <<'PYEOF'
+          import re
+
+          # ── outfit_2026.html から month-count を合計 ──
+          with open('outfit_2026.html', encoding='utf-8') as f:
+              html_2026 = f.read()
+
+          counts = re.findall(r'class="month-count">(\d+)枚', html_2026)
+          total_2026 = sum(int(c) for c in counts)
+          print(f'2026年: {total_2026}枚 (月別: {counts})')
+
+          # ── tsutsumi-reimi-fansite.html を更新 ──
+          with open('tsutsumi-reimi-fansite.html', encoding='utf-8') as f:
+              html = f.read()
+
+          # OUTFIT_COUNTS の 2026行を書き換え
+          html = re.sub(r'(2026:\s*)\d+', rf'\g<1>{total_2026}', html)
+
+          # 固定値の年別を読み取って合計を再計算
+          y2023 = int(re.search(r'2023:\s*(\d+)', html).group(1))
+          y2024 = int(re.search(r'2024:\s*(\d+)', html).group(1))
+          y2025 = int(re.search(r'2025:\s*(\d+)', html).group(1))
+          new_total = y2023 + y2024 + y2025 + total_2026
+          print(f'合計: {y2023}+{y2024}+{y2025}+{total_2026} = {new_total}枚')
+
+          # 静的テキストの合計枚数を置換（「644枚」など数字+枚 のパターン）
+          # 対象箇所だけ安全に置換するため既存の合計値を探して置換
+          old_total_m = re.search(r'衣装(\d+)枚', html)
+          if old_total_m:
+              old_total = old_total_m.group(1)
+              html = html.replace(f'{old_total}枚', f'{new_total}枚')
+              print(f'静的テキスト: {old_total}枚 → {new_total}枚 に置換')
+
+          with open('tsutsumi-reimi-fansite.html', 'w', encoding='utf-8') as f:
+              f.write(html)
+
+          print('完了')
+          PYEOF
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet || (
+            git add tsutsumi-reimi-fansite.html &&
+            git commit -m "chore: 2026年衣装枚数を自動更新" &&
+            git push
+          )

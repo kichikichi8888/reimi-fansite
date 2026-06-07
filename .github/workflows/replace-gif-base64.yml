@@ -1,0 +1,56 @@
+name: Replace GIF base64 with R2 URLs
+
+on:
+  workflow_dispatch:
+
+jobs:
+  replace:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Replace base64 with R2 URLs
+        run: |
+          python3 - << 'PYEOF'
+          import re, glob
+
+          R2_BASE = "https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev"
+
+          files = sorted(glob.glob("videos_gif_*.html"))
+          print(f"対象ファイル数: {len(files)}")
+
+          for filepath in files:
+              with open(filepath, encoding='utf-8') as f:
+                  html = f.read()
+
+              new_html = re.sub(
+                  r'src="data:image/gif;base64,[^"]*" alt="([^"]+)"',
+                  lambda m: f'src="{R2_BASE}/{m.group(1)}" alt="{m.group(1)}"',
+                  html
+              )
+
+              if new_html != html:
+                  with open(filepath, 'w', encoding='utf-8') as f:
+                      f.write(new_html)
+                  count = new_html.count(R2_BASE)
+                  old_size = len(html)
+                  new_size = len(new_html)
+                  print(f"{filepath}: {count}件置換 ({old_size//1024}KB → {new_size//1024}KB)")
+              else:
+                  print(f"{filepath}: 変更なし")
+
+          print("完了")
+          PYEOF
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet || (
+            git add videos_gif_*.html &&
+            git commit -m "chore: GIF base64をR2 URLに置換" &&
+            git push
+          )

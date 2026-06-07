@@ -1,0 +1,82 @@
+name: Fix GIF player - click to expand and overlay
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Fix player
+        run: |
+          python3 - << 'PYEOF'
+          import re, glob
+
+          R2_BASE = "https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev"
+
+          files = sorted(glob.glob("videos_gif_*.html"))
+          print(f"対象ファイル数: {len(files)}")
+
+          for filepath in files:
+              with open(filepath, encoding='utf-8') as f:
+                  html = f.read()
+
+              # 1. gif-itemにonclickを追加（インデックス付き）
+              counter = [0]
+              def add_onclick(m):
+                  idx = counter[0]
+                  counter[0] += 1
+                  return f'<div class="gif-item" onclick="lbOpen({idx})">'
+
+              html = re.sub(r'<div class="gif-item">', add_onclick, html)
+
+              # 2. buildLbItemsをvideoタグ対応に修正
+              html = html.replace(
+                  "var img=el.querySelector('img');\n    return{src:img.src,label:img.alt||''};",
+                  "var v=el.querySelector('video')||el.querySelector('img');\n    return{src:v.src,label:v.title||v.alt||''};"
+              )
+
+              # 3. lightboxのimgをvideoに変更
+              html = html.replace(
+                  '<img id="lb-img" src="" alt="">',
+                  '<video id="lb-img" autoplay loop muted playsinline style="max-width:90vw;max-height:80vh;display:block"></video>'
+              )
+
+              # 4. lbShow関数のlb-img更新部分をvideoに対応
+              html = re.sub(
+                  r"document\.getElementById\('lb-img'\)\.src\s*=\s*_lbItems\[_lbIdx\]\.src;",
+                  "var lbv=document.getElementById('lb-img');lbv.src='';lbv.src=_lbItems[_lbIdx].src;",
+                  html
+              )
+
+              # 5. gif-itemのvideo CSSにwidth/height追加
+              html = html.replace(
+                  '.gif-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}',
+                  '.gif-item img,.gif-item video{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}'
+              )
+              html = html.replace(
+                  '.gif-item:hover img{transform:scale(1.04)}',
+                  '.gif-item:hover img,.gif-item:hover video{transform:scale(1.04)}'
+              )
+
+              with open(filepath, 'w', encoding='utf-8') as f:
+                  f.write(html)
+              print(f"{filepath}: 修正完了")
+
+          print("完了")
+          PYEOF
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet || (
+            git add videos_gif_*.html &&
+            git commit -m "chore: GIFプレイヤー修正（クリック拡大・video対応）" &&
+            git push
+          )

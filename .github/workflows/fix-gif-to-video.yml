@@ -1,0 +1,56 @@
+name: Fix img to video tag for MP4
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Replace img with video tag
+        run: |
+          python3 - << 'PYEOF'
+          import re, glob
+
+          R2_BASE = "https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev"
+
+          files = sorted(glob.glob("videos_gif_*.html"))
+          print(f"対象ファイル数: {len(files)}")
+
+          for filepath in files:
+              with open(filepath, encoding='utf-8') as f:
+                  html = f.read()
+
+              # <img src="https://...r2.dev/xxx.mp4" alt="xxx.mp4" loading="lazy">
+              # → <video src="..." autoplay loop muted playsinline></video>
+              new_html = re.sub(
+                  r'<img src="(' + re.escape(R2_BASE) + r'/[^"]+\.mp4)" alt="([^"]+)" loading="lazy">',
+                  lambda m: f'<video src="{m.group(1)}" autoplay loop muted playsinline title="{m.group(2)}"></video>',
+                  html
+              )
+
+              if new_html != html:
+                  with open(filepath, 'w', encoding='utf-8') as f:
+                      f.write(new_html)
+                  count = new_html.count('<video src=')
+                  print(f"{filepath}: {count}件変換済み")
+              else:
+                  print(f"{filepath}: 変更なし")
+
+          print("完了")
+          PYEOF
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet || (
+            git add videos_gif_*.html &&
+            git commit -m "chore: imgタグをvideoタグに変換" &&
+            git push
+          )

@@ -1283,8 +1283,8 @@ section{transition:none}
   </div>
 </div>
 
-<!-- legacy lightbox stub (他セクションとの互換用) -->
-<div style="display:none" id="lightbox"><img id="lightbox-img" src=""><span id="lb-counter"></span></div>
+<!-- legacy lightbox stub (無効化済み) -->
+<div style="display:none!important;pointer-events:none" id="lightbox"><img id="lightbox-img" src=""><span id="lb-counter"></span></div>
 
 <script>
 // ── Reveal ──
@@ -1293,14 +1293,7 @@ var _io = new IntersectionObserver(function(entries){
 },{threshold:0.07});
 document.querySelectorAll('.reveal').forEach(function(el){_io.observe(el);});
 
-// ── Gallery lightbox ──
-document.querySelectorAll('.outfit-item').forEach(function(item){
-  item.addEventListener('click',function(){
-    document.getElementById('lightbox-img').src=item.querySelector('img').src;
-    document.getElementById('lightbox').classList.add('open');
-  });
-});
-// gallery lightbox handled by enhanced lbOpen above
+// ── Gallery lightbox (旧実装・無効化済み) ──
 
 // ── Work modal ──
 var WORKS={

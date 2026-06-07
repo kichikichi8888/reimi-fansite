@@ -562,6 +562,17 @@ section{transition:none}
 .color-bar-row{cursor:pointer;transition:opacity .2s}
 .color-bar-row:hover{opacity:.75}
 @media(max-width:600px){.season-modal-grid{grid-template-columns:repeat(3,1fr)}}
+
+/* MONTHLY PICKS */
+.picks-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:1.5rem}
+.picks-item{aspect-ratio:3/4;overflow:hidden;position:relative;cursor:pointer;border-radius:2px}
+.picks-item img{width:100%;height:100%;object-fit:cover;object-position:top;display:block;transition:transform .4s}
+.picks-item:hover img{transform:scale(1.06)}
+.picks-item .picks-overlay{position:absolute;inset:0;background:linear-gradient(to top,rgba(14,13,12,.7),transparent 50%);opacity:0;transition:opacity .3s;display:flex;align-items:flex-end;padding:.5rem}
+.picks-item:hover .picks-overlay{opacity:1}
+.picks-item .picks-overlay span{font-size:.65rem;letter-spacing:.08em;color:var(--gold-light)}
+.picks-badge{display:inline-block;font-size:.65rem;letter-spacing:.15em;color:var(--gold);border:1px solid rgba(201,169,110,.3);padding:.2rem .7rem;margin-bottom:1rem}
+@media(max-width:600px){.picks-grid{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
@@ -578,7 +589,8 @@ section{transition:none}
   <a href="#gallery" onclick="toggleMenu()">Gallery</a>
   <a href="#favorites" onclick="toggleMenu()">♡ お気に入り</a>
   <a href="#search" onclick="toggleMenu()">放送日検索</a>
-  <a href="#season" onclick="toggleMenu()">季節分析</a>
+  <a href="#monthly-picks" onclick="toggleMenu()">Monthly Picks</a>
+      <a href="#season" onclick="toggleMenu()">季節分析</a>
   <a href="videos_gif_1.html" onclick="toggleMenu()">📹 動画アーカイブ</a>
   <a href="outfit_2026.html">Outfit</a>
   <a href="#ranking" onclick="toggleMenu()">Ranking</a>
@@ -614,6 +626,7 @@ section{transition:none}
     <li class="nav-group">
       <span class="nav-group-label">データ系</span>
       <a href="#search">Search</a>
+      <a href="#monthly-picks" onclick="toggleMenu()">Monthly Picks</a>
       <a href="#season">Season</a>
       <a href="#ranking">Ranking</a>
       <a href="#quiz">Quiz</a>
@@ -1029,6 +1042,16 @@ section{transition:none}
       </div>
       <p class="season-analysis-body">冬はブラック系が約3割を占め、最もシックで洗練されたスタイリングが多い季節。サテン・ベルベット素材の光沢感が目立ち、年末年始はワイン・深紅系で華やかさをプラスする傾向がある。</p>
     </div>
+  </div>
+</section>
+
+<!-- MONTHLY PICKS -->
+<section id="monthly-picks">
+  <div class="section-inner">
+    <p class="section-label">MONTHLY PICKS</p>
+    <h2 class="section-title" id="picks-title">今月のおすすめコーデ</h2>
+    <span class="picks-badge" id="picks-badge"></span>
+    <div class="picks-grid" id="picks-grid"></div>
   </div>
 </section>
 
@@ -2547,7 +2570,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(function(r) { return r.json(); })
     .then(function(imgs) {
       shuffleGallery(imgs);
-      _galleryTimer = setInterval(function() { shuffleGallery(imgs); }, 30000);
+      _galleryTimer = setInterval(function() { shuffleGallery(imgs); }, 15000);
     })
     .catch(function(e) {
       console.warn('[GALLERY] gallery.json読み込み失敗:', e.message);
@@ -2571,6 +2594,76 @@ function openGalleryLightbox(src, name) {
   document.getElementById('gallery-lightbox-img').src = src;
   lb.style.display = 'flex';
 }
+
+// === MONTHLY PICKS ===
+(function() {
+  var MONTH_SEASON = {
+    1:'冬',2:'冬',3:'春',4:'春',5:'春',
+    6:'夏',7:'夏',8:'夏',
+    9:'秋',10:'秋',11:'秋',12:'冬'
+  };
+  var MONTH_LABEL = {
+    1:'1月',2:'2月',3:'3月',4:'4月',5:'5月',6:'6月',
+    7:'7月',8:'8月',9:'9月',10:'10月',11:'11月',12:'12月'
+  };
+
+  function getCurrentMonthImages() {
+    var month = new Date().getMonth() + 1;
+    // SEASON_IMAGESから当月に対応する季節の画像を取得
+    var seasonMap = {
+      '春': 'spring', '夏': 'summer', '秋': 'autumn', '冬': 'winter'
+    };
+    var season = seasonMap[MONTH_SEASON[month]];
+    var imgs = (typeof SEASON_IMAGES !== 'undefined' && SEASON_IMAGES[season]) ? SEASON_IMAGES[season] : [];
+    // 当月の画像だけに絞る（altに月が含まれるもの）
+    var monthPad = String(month).padStart(2, '0');
+    var monthImgs = imgs.filter(function(img) {
+      return img.alt && (
+        img.alt.indexOf('年' + month + '月') !== -1 ||
+        img.src.indexOf('_' + month + '_') !== -1 ||
+        img.src.indexOf('-' + monthPad) !== -1
+      );
+    });
+    // 当月画像が少なければ季節全体から
+    var pool = monthImgs.length >= 5 ? monthImgs : imgs;
+    return pool;
+  }
+
+  function renderPicks() {
+    var month = new Date().getMonth() + 1;
+    var season = MONTH_SEASON[month];
+    var pool = getCurrentMonthImages();
+    if (!pool.length) return;
+
+    // シャッフルして5枚選ぶ
+    var shuffled = pool.slice();
+    for (var i = shuffled.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = shuffled[i]; shuffled[i] = shuffled[j]; shuffled[j] = t;
+    }
+    var picks = shuffled.slice(0, 5);
+
+    var title = document.getElementById('picks-title');
+    var badge = document.getElementById('picks-badge');
+    var grid = document.getElementById('picks-grid');
+    if (!grid) return;
+
+    if (title) title.textContent = MONTH_LABEL[month] + 'のおすすめコーデ';
+    if (badge) badge.textContent = season + 'コーデ ' + picks.length + '選';
+
+    grid.innerHTML = '';
+    picks.forEach(function(img) {
+      var item = document.createElement('div');
+      item.className = 'picks-item';
+      item.innerHTML = '<img src="' + img.src + '" alt="' + img.alt + '" loading="lazy">'
+        + '<div class="picks-overlay"><span>' + img.alt + '</span></div>';
+      item.onclick = function() { openGalleryLightbox(img.src, img.alt); };
+      grid.appendChild(item);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', renderPicks);
+})();
 </script>
 
 <div class="season-modal-backdrop" id="season-img-modal" onclick="if(event.target===this)closeSeasonModal()">

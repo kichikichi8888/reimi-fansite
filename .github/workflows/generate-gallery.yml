@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - 'reimi/**'
+  workflow_dispatch:  # 手動実行ボタンを追加
 
 jobs:
   generate:
@@ -23,11 +24,10 @@ jobs:
           exts = {'.jpg', '.jpeg', '.png'}
 
           files = []
-          for f in os.listdir(reimi_dir):
+          for f in sorted(os.listdir(reimi_dir)):
               if os.path.splitext(f)[1].lower() in exts:
                   files.append('reimi/' + f)
 
-          # シャッフルして保存
           random.shuffle(files)
           with open('gallery.json', 'w', encoding='utf-8') as out:
               json.dump(files, out, ensure_ascii=False)
@@ -39,4 +39,4 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git diff --quiet || (git add gallery.json && git commit -m "chore: gallery.json更新 (reimi/フォルダ変更)" && git push)
+          git diff --quiet || (git add gallery.json && git commit -m "chore: gallery.json更新" && git push)

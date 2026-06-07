@@ -2551,13 +2551,14 @@ function shuffleGallery(imgs) {
     var sp = item.querySelector('.gallery-overlay span');
     img.style.transition = 'opacity .6s';
     img.style.opacity = '0';
-    setTimeout(function(s, im, spp) {
+    setTimeout(function(s, im, spp, it) {
       im.src = s;
       var name = s.replace('reimi/', '').replace(/\.[^.]+$/, '');
       im.alt = name;
       if (spp) spp.textContent = name;
       im.style.opacity = '1';
-    }.bind(null, src, img, sp), 400);
+      it.onclick = function() { openGalleryLightbox(s); };
+    }.bind(null, src, img, sp, item), 400);
   });
 }
 
@@ -2566,12 +2567,30 @@ document.addEventListener('DOMContentLoaded', function() {
     .then(function(r) { return r.json(); })
     .then(function(imgs) {
       shuffleGallery(imgs);
-      _galleryTimer = setInterval(function() { shuffleGallery(imgs); }, 10000);
+      _galleryTimer = setInterval(function() { shuffleGallery(imgs); }, 30000);
     })
     .catch(function(e) {
       console.warn('[GALLERY] gallery.json読み込み失敗:', e.message);
     });
 });
+
+// === GALLERY LIGHTBOX ===
+function openGalleryLightbox(src, name) {
+  var lb = document.getElementById('gallery-lightbox');
+  if (!lb) {
+    lb = document.createElement('div');
+    lb.id = 'gallery-lightbox';
+    lb.style.cssText = 'display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);align-items:center;justify-content:center;cursor:zoom-out';
+    lb.innerHTML = '<button style="position:absolute;top:1.5rem;right:1.5rem;color:#c9a96e;font-size:2rem;background:none;border:none;cursor:pointer;line-height:1" onclick="document.getElementById(\'gallery-lightbox\').style.display=\'none\'">&#x2715;</button><img id="gallery-lightbox-img" style="max-width:90vw;max-height:90vh;object-fit:contain;border:1px solid rgba(201,169,110,.2)">';
+    lb.onclick = function(e) { if (e.target === lb) lb.style.display = 'none'; };
+    document.body.appendChild(lb);
+    document.addEventListener('keydown', function(e) {
+      if (e.key === 'Escape') lb.style.display = 'none';
+    });
+  }
+  document.getElementById('gallery-lightbox-img').src = src;
+  lb.style.display = 'flex';
+}
 </script>
 
 <div class="season-modal-backdrop" id="season-img-modal" onclick="if(event.target===this)closeSeasonModal()">

@@ -273,8 +273,8 @@ footer{padding:2.5rem 3rem;border-top:1px solid rgba(201,169,110,.12);display:fl
 .footer-social a:hover{color:var(--gold)}
 
 /* LIGHTBOX */
-.lightbox{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.92);align-items:center;justify-content:center}
-.lightbox.open{display:flex}
+.lightbox{display:none!important;pointer-events:none!important}
+.lightbox.open{display:none!important}
 .lightbox img{max-width:90vw;max-height:90vh;object-fit:contain;border:1px solid rgba(201,169,110,.2)}
 .lightbox-close{position:absolute;top:1.5rem;right:1.5rem;color:var(--gold);font-size:1.8rem;cursor:pointer;background:none;border:none;line-height:1}
 
@@ -1284,7 +1284,7 @@ section{transition:none}
 </div>
 
 <!-- legacy lightbox stub (無効化済み) -->
-<div style="display:none!important;pointer-events:none" id="lightbox"><img id="lightbox-img" src=""><span id="lb-counter"></span></div>
+<div style="display:none!important;pointer-events:none;visibility:hidden;z-index:-1" id="lightbox"><img id="lightbox-img" src=""><span id="lb-counter"></span></div>
 
 <script>
 // ── Reveal ──
@@ -2055,7 +2055,7 @@ function showRandomCoord(){
   document.getElementById('coord-label').textContent='衣装アーカイブより';
   document.getElementById('coord-date').textContent=item.label;
   var wrap=document.getElementById('coord-img-wrap');
-  if(wrap){wrap.style.pointerEvents='auto';wrap.style.cursor='pointer';wrap.onclick=function(){document.getElementById('lightbox-img').src=item.src;document.getElementById('lightbox').classList.add('open');};}
+  if(wrap){wrap.style.pointerEvents='auto';wrap.style.cursor='pointer';wrap.onclick=function(){openGalleryLightbox(item.src);};}
 }
 
 showRandomCoord();

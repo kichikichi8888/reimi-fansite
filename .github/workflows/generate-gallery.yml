@@ -4,7 +4,7 @@ on:
   push:
     paths:
       - 'reimi/**'
-  workflow_dispatch:  # 手動実行ボタンを追加
+  workflow_dispatch:
 
 jobs:
   generate:
@@ -17,26 +17,18 @@ jobs:
 
       - name: Generate gallery.json
         run: |
-          python3 - << 'PYEOF'
+          python3 -c "
           import os, json, random
-
-          reimi_dir = 'reimi'
           exts = {'.jpg', '.jpeg', '.png'}
-
-          files = []
-          for f in sorted(os.listdir(reimi_dir)):
-              if os.path.splitext(f)[1].lower() in exts:
-                  files.append('reimi/' + f)
-
+          files = ['reimi/' + f for f in sorted(os.listdir('reimi')) if os.path.splitext(f)[1].lower() in exts]
           random.shuffle(files)
-          with open('gallery.json', 'w', encoding='utf-8') as out:
-              json.dump(files, out, ensure_ascii=False)
-
-          print(f'gallery.json生成完了: {len(files)}枚')
-          PYEOF
+          open('gallery.json', 'w', encoding='utf-8').write(json.dumps(files, ensure_ascii=False))
+          print('gallery.json生成完了:', len(files), '枚')
+          "
 
       - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git diff --quiet || (git add gallery.json && git commit -m "chore: gallery.json更新" && git push)
+          git add gallery.json
+          git diff --cached --quiet || git commit -m "chore: gallery.json更新" && git push

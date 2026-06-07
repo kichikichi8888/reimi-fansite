@@ -27,8 +27,8 @@ nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between
 /* GIF GRID */
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:4px;padding:1rem 2rem 2rem}
 .gif-item{position:relative;overflow:hidden;cursor:pointer;aspect-ratio:16/9;background:var(--surface)}
-.gif-item img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
-.gif-item:hover img{transform:scale(1.04)}
+.gif-item img,.gif-item video{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.gif-item:hover img,.gif-item:hover video{transform:scale(1.04)}
 .gif-overlay{position:absolute;inset:0;background:rgba(14,13,12,0);transition:background .3s;display:flex;align-items:flex-end;padding:.4rem}
 .gif-item:hover .gif-overlay{background:rgba(14,13,12,.25)}
 .gif-label{font-size:.55rem;color:var(--gold-light);opacity:0;transition:opacity .3s;letter-spacing:.05em;flex:1}
@@ -108,36 +108,36 @@ footer{padding:1.2rem 2rem;border-top:1px solid rgba(201,169,110,.1);display:fle
 </div>
 
 <div class="grid" id="gif-grid">
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/SFxTlMW.mp4" autoplay loop muted playsinline title="SFxTlMW.mp4"></video><div class="gif-overlay"><span class="gif-label">SFxTlMW.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/n7k4m1n.mp4" autoplay loop muted playsinline title="n7k4m1n.mp4"></video><div class="gif-overlay"><span class="gif-label">n7k4m1n.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/uQFioUv.mp4" autoplay loop muted playsinline title="uQFioUv.mp4"></video><div class="gif-overlay"><span class="gif-label">uQFioUv.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/KYKKUxz.mp4" autoplay loop muted playsinline title="KYKKUxz.mp4"></video><div class="gif-overlay"><span class="gif-label">KYKKUxz.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/T4gkm3q.mp4" autoplay loop muted playsinline title="T4gkm3q.mp4"></video><div class="gif-overlay"><span class="gif-label">T4gkm3q.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/yfR7RfF.mp4" autoplay loop muted playsinline title="yfR7RfF.mp4"></video><div class="gif-overlay"><span class="gif-label">yfR7RfF.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/Cq2ckpI.mp4" autoplay loop muted playsinline title="Cq2ckpI.mp4"></video><div class="gif-overlay"><span class="gif-label">Cq2ckpI.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/fIXD58R.mp4" autoplay loop muted playsinline title="fIXD58R.mp4"></video><div class="gif-overlay"><span class="gif-label">fIXD58R.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/Dxeyuoe.mp4" autoplay loop muted playsinline title="Dxeyuoe.mp4"></video><div class="gif-overlay"><span class="gif-label">Dxeyuoe.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/XuZicAw.mp4" autoplay loop muted playsinline title="XuZicAw.mp4"></video><div class="gif-overlay"><span class="gif-label">XuZicAw.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/AnqtplM.mp4" autoplay loop muted playsinline title="AnqtplM.mp4"></video><div class="gif-overlay"><span class="gif-label">AnqtplM.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/8GfsOxp.mp4" autoplay loop muted playsinline title="8GfsOxp.mp4"></video><div class="gif-overlay"><span class="gif-label">8GfsOxp.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/x0Dpesq.mp4" autoplay loop muted playsinline title="x0Dpesq.mp4"></video><div class="gif-overlay"><span class="gif-label">x0Dpesq.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/Xy85mJP.mp4" autoplay loop muted playsinline title="Xy85mJP.mp4"></video><div class="gif-overlay"><span class="gif-label">Xy85mJP.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/58siC1t.mp4" autoplay loop muted playsinline title="58siC1t.mp4"></video><div class="gif-overlay"><span class="gif-label">58siC1t.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/P37liuT.mp4" autoplay loop muted playsinline title="P37liuT.mp4"></video><div class="gif-overlay"><span class="gif-label">P37liuT.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/IelPC6R.mp4" autoplay loop muted playsinline title="IelPC6R.mp4"></video><div class="gif-overlay"><span class="gif-label">IelPC6R.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/Oz6qqe0.mp4" autoplay loop muted playsinline title="Oz6qqe0.mp4"></video><div class="gif-overlay"><span class="gif-label">Oz6qqe0.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/t3f25Jb.mp4" autoplay loop muted playsinline title="t3f25Jb.mp4"></video><div class="gif-overlay"><span class="gif-label">t3f25Jb.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/fjsgFc5.mp4" autoplay loop muted playsinline title="fjsgFc5.mp4"></video><div class="gif-overlay"><span class="gif-label">fjsgFc5.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/o0480050014477106167.mp4" autoplay loop muted playsinline title="o0480050014477106167.mp4"></video><div class="gif-overlay"><span class="gif-label">o0480050014477106167.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/Q6s9HzE.mp4" autoplay loop muted playsinline title="Q6s9HzE.mp4"></video><div class="gif-overlay"><span class="gif-label">Q6s9HzE.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/eYxzeJP.mp4" autoplay loop muted playsinline title="eYxzeJP.mp4"></video><div class="gif-overlay"><span class="gif-label">eYxzeJP.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/XDCwLnW.mp4" autoplay loop muted playsinline title="XDCwLnW.mp4"></video><div class="gif-overlay"><span class="gif-label">XDCwLnW.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/wa50yZI.mp4" autoplay loop muted playsinline title="wa50yZI.mp4"></video><div class="gif-overlay"><span class="gif-label">wa50yZI.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/qTltEI7.mp4" autoplay loop muted playsinline title="qTltEI7.mp4"></video><div class="gif-overlay"><span class="gif-label">qTltEI7.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/4bw6qbR.mp4" autoplay loop muted playsinline title="4bw6qbR.mp4"></video><div class="gif-overlay"><span class="gif-label">4bw6qbR.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/D7H3Cto.mp4" autoplay loop muted playsinline title="D7H3Cto.mp4"></video><div class="gif-overlay"><span class="gif-label">D7H3Cto.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/cU56TRL.mp4" autoplay loop muted playsinline title="cU56TRL.mp4"></video><div class="gif-overlay"><span class="gif-label">cU56TRL.mp4</span></div></div>
-<div class="gif-item"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/kv1u9l5.mp4" autoplay loop muted playsinline title="kv1u9l5.mp4"></video><div class="gif-overlay"><span class="gif-label">kv1u9l5.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(0)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/SFxTlMW.mp4" autoplay loop muted playsinline title="SFxTlMW.mp4"></video><div class="gif-overlay"><span class="gif-label">SFxTlMW.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(1)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/n7k4m1n.mp4" autoplay loop muted playsinline title="n7k4m1n.mp4"></video><div class="gif-overlay"><span class="gif-label">n7k4m1n.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(2)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/uQFioUv.mp4" autoplay loop muted playsinline title="uQFioUv.mp4"></video><div class="gif-overlay"><span class="gif-label">uQFioUv.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(3)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/KYKKUxz.mp4" autoplay loop muted playsinline title="KYKKUxz.mp4"></video><div class="gif-overlay"><span class="gif-label">KYKKUxz.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(4)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/T4gkm3q.mp4" autoplay loop muted playsinline title="T4gkm3q.mp4"></video><div class="gif-overlay"><span class="gif-label">T4gkm3q.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(5)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/yfR7RfF.mp4" autoplay loop muted playsinline title="yfR7RfF.mp4"></video><div class="gif-overlay"><span class="gif-label">yfR7RfF.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(6)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/Cq2ckpI.mp4" autoplay loop muted playsinline title="Cq2ckpI.mp4"></video><div class="gif-overlay"><span class="gif-label">Cq2ckpI.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(7)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/fIXD58R.mp4" autoplay loop muted playsinline title="fIXD58R.mp4"></video><div class="gif-overlay"><span class="gif-label">fIXD58R.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(8)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/Dxeyuoe.mp4" autoplay loop muted playsinline title="Dxeyuoe.mp4"></video><div class="gif-overlay"><span class="gif-label">Dxeyuoe.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(9)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/XuZicAw.mp4" autoplay loop muted playsinline title="XuZicAw.mp4"></video><div class="gif-overlay"><span class="gif-label">XuZicAw.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(10)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/AnqtplM.mp4" autoplay loop muted playsinline title="AnqtplM.mp4"></video><div class="gif-overlay"><span class="gif-label">AnqtplM.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(11)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/8GfsOxp.mp4" autoplay loop muted playsinline title="8GfsOxp.mp4"></video><div class="gif-overlay"><span class="gif-label">8GfsOxp.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(12)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/x0Dpesq.mp4" autoplay loop muted playsinline title="x0Dpesq.mp4"></video><div class="gif-overlay"><span class="gif-label">x0Dpesq.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(13)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/Xy85mJP.mp4" autoplay loop muted playsinline title="Xy85mJP.mp4"></video><div class="gif-overlay"><span class="gif-label">Xy85mJP.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(14)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/58siC1t.mp4" autoplay loop muted playsinline title="58siC1t.mp4"></video><div class="gif-overlay"><span class="gif-label">58siC1t.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(15)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/P37liuT.mp4" autoplay loop muted playsinline title="P37liuT.mp4"></video><div class="gif-overlay"><span class="gif-label">P37liuT.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(16)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/IelPC6R.mp4" autoplay loop muted playsinline title="IelPC6R.mp4"></video><div class="gif-overlay"><span class="gif-label">IelPC6R.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(17)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/Oz6qqe0.mp4" autoplay loop muted playsinline title="Oz6qqe0.mp4"></video><div class="gif-overlay"><span class="gif-label">Oz6qqe0.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(18)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/t3f25Jb.mp4" autoplay loop muted playsinline title="t3f25Jb.mp4"></video><div class="gif-overlay"><span class="gif-label">t3f25Jb.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(19)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/fjsgFc5.mp4" autoplay loop muted playsinline title="fjsgFc5.mp4"></video><div class="gif-overlay"><span class="gif-label">fjsgFc5.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(20)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/o0480050014477106167.mp4" autoplay loop muted playsinline title="o0480050014477106167.mp4"></video><div class="gif-overlay"><span class="gif-label">o0480050014477106167.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(21)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/Q6s9HzE.mp4" autoplay loop muted playsinline title="Q6s9HzE.mp4"></video><div class="gif-overlay"><span class="gif-label">Q6s9HzE.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(22)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/eYxzeJP.mp4" autoplay loop muted playsinline title="eYxzeJP.mp4"></video><div class="gif-overlay"><span class="gif-label">eYxzeJP.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(23)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/XDCwLnW.mp4" autoplay loop muted playsinline title="XDCwLnW.mp4"></video><div class="gif-overlay"><span class="gif-label">XDCwLnW.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(24)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/wa50yZI.mp4" autoplay loop muted playsinline title="wa50yZI.mp4"></video><div class="gif-overlay"><span class="gif-label">wa50yZI.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(25)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/qTltEI7.mp4" autoplay loop muted playsinline title="qTltEI7.mp4"></video><div class="gif-overlay"><span class="gif-label">qTltEI7.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(26)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/4bw6qbR.mp4" autoplay loop muted playsinline title="4bw6qbR.mp4"></video><div class="gif-overlay"><span class="gif-label">4bw6qbR.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(27)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/D7H3Cto.mp4" autoplay loop muted playsinline title="D7H3Cto.mp4"></video><div class="gif-overlay"><span class="gif-label">D7H3Cto.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(28)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/cU56TRL.mp4" autoplay loop muted playsinline title="cU56TRL.mp4"></video><div class="gif-overlay"><span class="gif-label">cU56TRL.mp4</span></div></div>
+<div class="gif-item" onclick="lbOpen(29)"><video src="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/kv1u9l5.mp4" autoplay loop muted playsinline title="kv1u9l5.mp4"></video><div class="gif-overlay"><span class="gif-label">kv1u9l5.mp4</span></div></div>
 
 </div>
 
@@ -158,7 +158,7 @@ footer{padding:1.2rem 2rem;border-top:1px solid rgba(201,169,110,.1);display:fle
 <div class="lightbox" id="lightbox" onclick="if(event.target===this)lbClose()">
   <div class="lb-img-wrap">
     <button class="lb-close" onclick="lbClose()">✕</button>
-    <img id="lb-img" src="" alt="">
+    <video id="lb-img" autoplay loop muted playsinline style="max-width:90vw;max-height:80vh;display:block"></video>
   </div>
   <div class="lb-nav">
     <button class="lb-nav-btn" onclick="lbNav(-1)">← 前</button>
@@ -208,8 +208,8 @@ function showToast(msg){
 var _lbItems=[];var _lbIdx=0;
 function buildLbItems(){
   _lbItems=Array.from(document.querySelectorAll('.gif-item')).map(function(el){
-    var img=el.querySelector('img');
-    return{src:img.src,label:img.alt||''};
+    var v=el.querySelector('video')||el.querySelector('img');
+    return{src:v.src,label:v.title||v.alt||''};
   });
 }
 function lbOpen(idx){

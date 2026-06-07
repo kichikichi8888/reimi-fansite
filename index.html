@@ -2139,19 +2139,7 @@ document.addEventListener('keydown',function(e){
     var dx=e.changedTouches[0].clientX-tx;
     if(Math.abs(dx)>50){show(dx<0?idx+1:idx-1);}
   },{passive:true});
-  // Wire gallery items
-  document.addEventListener('DOMContentLoaded',function(){
-    var galleryItems=document.querySelectorAll('.gallery-item');
-    items=Array.from(galleryItems).map(function(el){
-      return{src:el.querySelector('img').src, cap:el.getAttribute('title')||''};
-    });
-    // Inject zoom icon into overlay
-    galleryItems.forEach(function(el,i){
-      var ov=el.querySelector('.gallery-overlay');
-      if(ov){var z=document.createElement('span');z.className='gallery-zoom-icon';z.textContent='⊕';ov.appendChild(z);}
-      el.addEventListener('click',function(){open(i);});
-    });
-  });
+  // Wire gallery items（shuffleGalleryのonclickに一元化したため無効化）
   // expose for favorites compat
   window._gmOpen=open;
   window._gmItems=items;

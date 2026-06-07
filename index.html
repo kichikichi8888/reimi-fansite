@@ -2060,13 +2060,11 @@ function showRandomCoord(){
 
 showRandomCoord();
 
-// ── Enhanced Lightbox with prev/next ──
+// ── Enhanced Lightbox with prev/next（ギャラリーlightboxにリダイレクト）──
 var _lbItems=[];var _lbIdx=0;
 function lbOpen(items,idx){
   _lbItems=items;_lbIdx=idx;
-  document.getElementById('lightbox-img').src=_lbItems[_lbIdx];
-  document.getElementById('lb-counter').textContent=(_lbIdx+1)+' / '+_lbItems.length;
-  document.getElementById('lightbox').classList.add('open');
+  openGalleryLightbox(_lbItems[_lbIdx]);
 }
 function lbNav(dir){
   _lbIdx=(_lbIdx+dir+_lbItems.length)%_lbItems.length;

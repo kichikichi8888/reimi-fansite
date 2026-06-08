@@ -599,6 +599,18 @@ section{transition:none}
 .mz-more-btn{margin-top:1.5rem;background:none;border:1px solid rgba(201,169,110,.4);color:var(--gold);padding:.6rem 2rem;cursor:pointer;letter-spacing:.15em;font-size:.8rem;transition:all .3s}
 .mz-more-btn:hover{background:rgba(201,169,110,.1)}
 @media(max-width:600px){.mezamashi-grid{grid-template-columns:repeat(3,1fr)}}
+
+/* SOREWA SPECIAL */
+.sorewa-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:1.5rem}
+.sorewa-item{aspect-ratio:16/9;overflow:hidden;position:relative;cursor:pointer;background:var(--surface);display:flex;align-items:center;justify-content:center}
+.sorewa-item .sw-play{color:rgba(201,169,110,.4);font-size:1.5rem;transition:color .3s;pointer-events:none}
+.sorewa-item:hover .sw-play{color:var(--gold)}
+.sorewa-item video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:none}
+.sorewa-item.sw-loaded video{display:block}
+.sorewa-item.sw-loaded .sw-play{display:none}
+.sw-more-btn{margin-top:1.5rem;background:none;border:1px solid rgba(201,169,110,.4);color:var(--gold);padding:.6rem 2rem;cursor:pointer;letter-spacing:.15em;font-size:.8rem;transition:all .3s}
+.sw-more-btn:hover{background:rgba(201,169,110,.1)}
+@media(max-width:600px){.sorewa-grid{grid-template-columns:repeat(3,1fr)}}
 </style>
 </head>
 <body>
@@ -1083,6 +1095,19 @@ section{transition:none}
     <div class="mezamashi-grid" id="mezamashi-grid"></div>
     <div style="text-align:center">
       <button class="mz-more-btn" onclick="openMzModal()">すべて見る（414枚）</button>
+    </div>
+  </div>
+</section>
+
+<!-- SOREWA SPECIAL -->
+<section id="sorewa-special">
+  <div class="section-inner">
+    <p class="section-label">SPECIAL COLLECTION</p>
+    <h2 class="section-title">「それでは」集</h2>
+    <p class="section-desc" style="color:var(--muted);font-size:.85rem;margin-bottom:1rem">FNN Live News α 締めの「それでは」全115本。</p>
+    <div class="sorewa-grid" id="sorewa-grid"></div>
+    <div style="text-align:center">
+      <a href="sorewa.html" class="sw-more-btn">すべて見る（115本）</a>
     </div>
   </div>
 </section>
@@ -2764,6 +2789,47 @@ document.addEventListener('keydown', function(e) {
 });
 
 document.addEventListener('DOMContentLoaded', renderMezamashiPicks);
+
+// === SOREWA SPECIAL ===
+(function() {
+  var R2 = 'https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/sorewa/';
+  var TOTAL = 115;
+
+  function renderSorewa() {
+    var grid = document.getElementById('sorewa-grid');
+    if (!grid) return;
+
+    // ランダムに6本選ぶ
+    var pool = [];
+    for (var i = 1; i <= TOTAL; i++) pool.push(i);
+    for (var i = pool.length - 1; i > 0; i--) {
+      var j = Math.floor(Math.random() * (i + 1));
+      var t = pool[i]; pool[i] = pool[j]; pool[j] = t;
+    }
+    var picks = pool.slice(0, 6);
+
+    picks.forEach(function(num) {
+      var src = R2 + 'sorewa_' + String(num).padStart(3, '0') + '.mp4';
+      var item = document.createElement('div');
+      item.className = 'sorewa-item';
+      item.dataset.src = src;
+      item.innerHTML = '<span class="sw-play">▶</span><video muted playsinline loop></video>';
+      item.onclick = function() {
+        if (!this.classList.contains('sw-loaded')) {
+          var v = this.querySelector('video');
+          v.src = this.dataset.src;
+          v.play().catch(function(){});
+          this.classList.add('sw-loaded');
+        } else {
+          window.location.href = 'sorewa.html';
+        }
+      };
+      grid.appendChild(item);
+    });
+  }
+
+  document.addEventListener('DOMContentLoaded', renderSorewa);
+})();
 </script>
 
 <div class="season-modal-backdrop" id="season-img-modal" onclick="if(event.target===this)closeSeasonModal()">

@@ -114,7 +114,7 @@ var observer = new IntersectionObserver(function(entries) {
     var video = entry.target.querySelector('video');
     if (!video) return;
     if (entry.isIntersecting) {
-      if (!video.src && video.dataset.src) {
+      if (!video.getAttribute('src') && video.dataset.src) {
         video.src = video.dataset.src;
       }
       video.play().catch(function(){});

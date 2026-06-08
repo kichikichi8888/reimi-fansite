@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>堤礼実「それでは」集</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#0e0d0c;--surface:#161512;--gold:#c9a96e;--gold-light:#e8d5a8;--cream:#f5f0e8;--muted:#8a8480;--text:#d8d0c4}
+html{scroll-behavior:smooth}
+body{background:var(--bg);color:var(--text);font-family:'Noto Sans JP',sans-serif;font-weight:300;overflow-x:hidden}
+nav{position:sticky;top:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:.9rem 2rem;background:rgba(14,13,12,.97);backdrop-filter:blur(4px);border-bottom:1px solid rgba(201,169,110,.1)}
+.nav-logo{font-family:'Cormorant Garamond',serif;font-size:1.1rem;color:var(--gold);text-decoration:none;letter-spacing:.2em}
+.nav-right{display:flex;align-items:center;gap:.4rem;flex-wrap:wrap}
+.nav-btn{padding:.28rem .7rem;border:1px solid rgba(201,169,110,.2);color:var(--muted);text-decoration:none;font-size:.62rem;letter-spacing:.1em;transition:all .3s;background:none;cursor:pointer;font-family:'Noto Sans JP',sans-serif}
+.nav-btn:hover{border-color:var(--gold);color:var(--gold)}
+.page-header{padding:2rem 2rem 1rem}
+.page-eyebrow{font-size:.62rem;letter-spacing:.3em;text-transform:uppercase;color:var(--gold);margin-bottom:.4rem}
+.page-title{font-family:'Cormorant Garamond',serif;font-size:clamp(1.6rem,3.5vw,2.8rem);font-weight:300;color:var(--cream)}
+.page-title span{display:block;font-style:italic;color:var(--gold-light);font-size:.55em}
+.page-divider{width:2.5rem;height:1px;background:var(--gold);margin-top:.8rem}
+.ctrl-info{font-size:.65rem;color:var(--muted);padding:.6rem 2rem;background:var(--surface);border-bottom:1px solid rgba(201,169,110,.08)}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:4px;padding:1rem 2rem 2rem}
+.gif-item{position:relative;overflow:hidden;cursor:pointer;aspect-ratio:16/9;background:var(--surface)}
+.gif-item video{width:100%;height:100%;object-fit:cover;display:block;transition:transform .3s}
+.gif-item:hover video{transform:scale(1.04)}
+.gif-overlay{position:absolute;inset:0;background:rgba(14,13,12,0);transition:background .3s;display:flex;align-items:flex-end;padding:.4rem}
+.gif-item:hover .gif-overlay{background:rgba(14,13,12,.25)}
+.gif-label{font-size:.55rem;color:var(--gold-light);opacity:0;transition:opacity .3s;letter-spacing:.05em}
+.gif-item:hover .gif-label{opacity:1}
+.lightbox{display:none;position:fixed;inset:0;z-index:999;background:rgba(0,0,0,.93);align-items:center;justify-content:center;flex-direction:column;gap:1rem}
+.lightbox.open{display:flex}
+.lb-video-wrap{position:relative;max-width:90vw;max-height:80vh;display:flex;align-items:center;justify-content:center}
+.lb-video-wrap video{max-width:90vw;max-height:78vh;border:1px solid rgba(201,169,110,.2)}
+.lb-close{position:absolute;top:-2.5rem;right:0;color:var(--gold);font-size:1.6rem;cursor:pointer;background:none;border:none;line-height:1}
+.lb-nav{display:flex;gap:1rem;align-items:center}
+.lb-nav-btn{padding:.4rem 1.2rem;border:1px solid rgba(201,169,110,.3);background:none;color:var(--gold);font-size:.8rem;cursor:pointer;transition:all .3s;font-family:'Noto Sans JP',sans-serif}
+.lb-nav-btn:hover{background:rgba(201,169,110,.1)}
+.lb-counter{font-size:.72rem;color:var(--muted);letter-spacing:.1em;min-width:5rem;text-align:center}
+.lb-filename{font-size:.65rem;color:var(--muted);letter-spacing:.08em}
+.toast{position:fixed;bottom:5rem;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid rgba(201,169,110,.3);color:var(--gold);padding:.5rem 1.4rem;font-size:.75rem;letter-spacing:.1em;opacity:0;transition:opacity .4s;z-index:1100;pointer-events:none;white-space:nowrap}
+.toast.show{opacity:1}
+.back-to-top{position:fixed;bottom:1.5rem;right:1.5rem;width:40px;height:40px;background:var(--surface);border:1px solid rgba(201,169,110,.3);color:var(--gold);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s,transform .3s;pointer-events:none;z-index:50}
+.back-to-top.visible{opacity:1;pointer-events:auto}
+.back-to-top:hover{transform:translateY(-2px)}
+footer{padding:1.2rem 2rem;border-top:1px solid rgba(201,169,110,.1);display:flex;justify-content:space-between;align-items:center;font-size:.65rem;color:var(--muted)}
+.footer-logo{font-family:'Cormorant Garamond',serif;font-size:.95rem;color:var(--gold);letter-spacing:.2em}
+@media(max-width:600px){
+  nav{padding:.7rem 1rem;flex-wrap:wrap;gap:.3rem}
+  .page-header,.ctrl-info,.grid{padding-left:1rem;padding-right:1rem}
+  .grid{grid-template-columns:repeat(2,1fr);gap:3px}
+  .lb-nav{flex-wrap:wrap;justify-content:center}
+}
+</style>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;1,300&family=Noto+Sans+JP:wght@300&display=swap" rel="stylesheet">
+</head>
+<body>
+<nav>
+  <a class="nav-logo" href="index.html">Reimi Tsutsumi</a>
+  <div class="nav-right">
+    <a class="nav-btn" href="index.html">← ファンサイトへ</a>
+    <a class="nav-btn" href="videos_gif_1.html">動画アーカイブ</a>
+  </div>
+</nav>
+
+<div class="page-header">
+  <p class="page-eyebrow">SPECIAL COLLECTION</p>
+  <h1 class="page-title">「それでは」集<span>Reimi Tsutsumi — Soredewa Collection</span></h1>
+  <div class="page-divider"></div>
+</div>
+
+<div class="ctrl-info" id="ctrl-info">全115本</div>
+
+<div class="grid" id="grid"></div>
+
+<div class="lightbox" id="lightbox" onclick="if(event.target===this)lbClose()">
+  <div class="lb-video-wrap">
+    <button class="lb-close" onclick="lbClose()">✕</button>
+    <video id="lb-video" controls autoplay loop muted playsinline></video>
+  </div>
+  <div class="lb-nav">
+    <button class="lb-nav-btn" onclick="lbNav(-1)">← 前</button>
+    <span class="lb-counter" id="lb-counter"></span>
+    <button class="lb-nav-btn" onclick="lbNav(1)">次 →</button>
+  </div>
+  <span class="lb-filename" id="lb-filename"></span>
+</div>
+
+<div class="toast" id="toast"></div>
+<button class="back-to-top" id="btt" onclick="window.scrollTo({top:0,behavior:'smooth'})">↑</button>
+
+<footer>
+  <span class="footer-logo">Reimi Tsutsumi</span>
+  <span>堤礼実 非公式ファンサイト・動画は <a href="https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev" style="color:var(--gold)">R2</a> から配信</span>
+</footer>
+
+<script>
+var R2 = 'https://pub-892969dcd9c44f5481be36c5e9e2eb4b.r2.dev/sorewa/';
+var TOTAL = 115;
+var _lbIdx = 0;
+
+// グリッド生成
+var grid = document.getElementById('grid');
+for (var i = 1; i <= TOTAL; i++) {
+  var src = R2 + 'sorewa_' + String(i).padStart(3, '0') + '.mp4';
+  var item = document.createElement('div');
+  item.className = 'gif-item';
+  item.dataset.idx = i - 1;
+  item.innerHTML = '<video src="' + src + '" autoplay loop muted playsinline></video>'
+    + '<div class="gif-overlay"><span class="gif-label">No.' + i + '</span></div>';
+  item.onclick = (function(idx) { return function() { lbOpen(idx); }; })(i - 1);
+  grid.appendChild(item);
+}
+
+// Lightbox
+function lbOpen(idx) {
+  _lbIdx = idx;
+  lbShow();
+  document.getElementById('lightbox').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+function lbShow() {
+  var src = R2 + 'sorewa_' + String(_lbIdx + 1).padStart(3, '0') + '.mp4';
+  var v = document.getElementById('lb-video');
+  v.src = src;
+  v.play();
+  document.getElementById('lb-counter').textContent = (_lbIdx + 1) + ' / ' + TOTAL;
+  document.getElementById('lb-filename').textContent = 'sorewa_' + String(_lbIdx + 1).padStart(3, '0') + '.mp4';
+}
+function lbClose() {
+  document.getElementById('lightbox').classList.remove('open');
+  document.getElementById('lb-video').pause();
+  document.body.style.overflow = '';
+}
+function lbNav(dir) {
+  _lbIdx = (_lbIdx + dir + TOTAL) % TOTAL;
+  lbShow();
+}
+document.addEventListener('keydown', function(e) {
+  if (e.key === 'Escape') lbClose();
+  if (e.key === 'ArrowLeft') lbNav(-1);
+  if (e.key === 'ArrowRight') lbNav(1);
+});
+
+// Back to top
+window.addEventListener('scroll', function() {
+  document.getElementById('btt').classList.toggle('visible', window.scrollY > 300);
+});
+
+document.getElementById('cy') && (document.getElementById('cy').textContent = new Date().getFullYear());
+</script>
+</body>
+</html>

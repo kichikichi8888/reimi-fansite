@@ -15,47 +15,79 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Sync filter button counts
+      - name: Sync counts
         run: |
           python3 - << 'PYEOF'
           import re
 
+          # ── outfit_2026.html の月別カウントを同期 ──
           with open('outfit_2026.html', encoding='utf-8') as f:
-              html = f.read()
+              html26 = f.read()
 
-          # 各月のoutfit-item数を数える
           months = ['01','02','03','04','05','06','07','08','09','10','11','12']
           month_names = {'01':'1月','02':'2月','03':'3月','04':'4月','05':'5月','06':'6月',
                          '07':'7月','08':'8月','09':'9月','10':'10月','11':'11月','12':'12月'}
 
+          total_2026 = 0
           for m in months:
               block_pat = re.compile(
                   r'data-month="' + m + r'">(.*?)(?=<div class="month-block"|</div>\s*</div>\s*</div>\s*<div class="year-pagination")',
                   re.DOTALL
               )
-              block = block_pat.search(html)
+              block = block_pat.search(html26)
               if not block:
                   continue
               count = len(re.findall(r'class="outfit-item"', block.group(1)))
               if count == 0:
                   continue
+              total_2026 += count
 
               # フィルターボタンの数字を更新
-              html = re.sub(
+              html26 = re.sub(
                   r"filterMonth\('" + m + r"'\)\">" + month_names[m] + r" \(\d+\)",
                   f"filterMonth('{m}')\">{month_names[m]} ({count})",
-                  html
+                  html26
               )
               # month-countを更新
-              html = re.sub(
+              html26 = re.sub(
                   r'(data-month="' + m + r'".*?month-count">)\d+枚',
                   lambda x: x.group(1) + str(count) + '枚',
-                  html, flags=re.DOTALL, count=1
+                  html26, flags=re.DOTALL, count=1
               )
               print(f'{month_names[m]}: {count}枚')
 
+          print(f'2026年合計: {total_2026}枚')
+
           with open('outfit_2026.html', 'w', encoding='utf-8') as f:
-              f.write(html)
+              f.write(html26)
+
+          # ── index.html の枚数を更新 ──
+          with open('index.html', encoding='utf-8') as f:
+              index = f.read()
+
+          # 固定年の枚数
+          y2023 = int(re.search(r'2023:\s*(\d+)', index).group(1))
+          y2024 = int(re.search(r'2024:\s*(\d+)', index).group(1))
+          y2025 = int(re.search(r'2025:\s*(\d+)', index).group(1))
+          new_total = y2023 + y2024 + y2025 + total_2026
+
+          # OUTFIT_COUNTSの2026を更新
+          index = re.sub(r'(2026:\s*)\d+', r'\g<1>' + str(total_2026), index)
+
+          # 静的テキストの合計枚数を更新（XXX枚 → new_total枚）
+          old_total_m = re.search(r'衣装(\d+)枚', index)
+          if old_total_m:
+              old_total = old_total_m.group(1)
+              if old_total != str(new_total):
+                  index = index.replace(f'{old_total}枚', f'{new_total}枚')
+                  print(f'合計: {old_total}枚 → {new_total}枚')
+
+          # outfit-countの2026年枚数も更新
+          index = re.sub(r'(outfit-count[^>]*>)\d+枚(</span>)', r'\g<1>' + str(total_2026) + r'枚\2', index)
+
+          with open('index.html', 'w', encoding='utf-8') as f:
+              f.write(index)
+
           print('完了')
           PYEOF
 
@@ -63,4 +95,8 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git diff --quiet || (git add outfit_2026.html && git commit -m "chore: 衣装枚数を自動更新" && git push)
+          git diff --quiet || (
+            git add outfit_2026.html index.html &&
+            git commit -m "chore: 衣装枚数を自動更新" &&
+            git push
+          )

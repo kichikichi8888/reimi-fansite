@@ -1,0 +1,66 @@
+name: Update Outfit Count
+
+on:
+  push:
+    paths:
+      - 'outfit_2026.html'
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Sync filter button counts
+        run: |
+          python3 - << 'PYEOF'
+          import re
+
+          with open('outfit_2026.html', encoding='utf-8') as f:
+              html = f.read()
+
+          # 各月のoutfit-item数を数える
+          months = ['01','02','03','04','05','06','07','08','09','10','11','12']
+          month_names = {'01':'1月','02':'2月','03':'3月','04':'4月','05':'5月','06':'6月',
+                         '07':'7月','08':'8月','09':'9月','10':'10月','11':'11月','12':'12月'}
+
+          for m in months:
+              block_pat = re.compile(
+                  r'data-month="' + m + r'">(.*?)(?=<div class="month-block"|</div>\s*</div>\s*</div>\s*<div class="year-pagination")',
+                  re.DOTALL
+              )
+              block = block_pat.search(html)
+              if not block:
+                  continue
+              count = len(re.findall(r'class="outfit-item"', block.group(1)))
+              if count == 0:
+                  continue
+
+              # フィルターボタンの数字を更新
+              html = re.sub(
+                  r"filterMonth\('" + m + r"'\)\">" + month_names[m] + r" \(\d+\)",
+                  f"filterMonth('{m}')\">{month_names[m]} ({count})",
+                  html
+              )
+              # month-countを更新
+              html = re.sub(
+                  r'(data-month="' + m + r'".*?month-count">)\d+枚',
+                  lambda x: x.group(1) + str(count) + '枚',
+                  html, flags=re.DOTALL, count=1
+              )
+              print(f'{month_names[m]}: {count}枚')
+
+          with open('outfit_2026.html', 'w', encoding='utf-8') as f:
+              f.write(html)
+          print('完了')
+          PYEOF
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet || (git add outfit_2026.html && git commit -m "chore: 衣装枚数を自動更新" && git push)

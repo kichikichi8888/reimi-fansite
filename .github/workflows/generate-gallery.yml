@@ -19,11 +19,24 @@ jobs:
         run: |
           python3 -c "
           import os, json, random
+
+          reimi_dir = 'reimi'
           exts = {'.jpg', '.jpeg', '.png'}
-          files = ['reimi/' + f for f in sorted(os.listdir('reimi')) if os.path.splitext(f)[1].lower() in exts]
+          min_size = 100 * 1024  # 100KB以下を除外
+
+          files = []
+          for f in sorted(os.listdir(reimi_dir)):
+              ext = os.path.splitext(f)[1].lower()
+              if ext not in exts:
+                  continue
+              path = os.path.join(reimi_dir, f)
+              if os.path.getsize(path) < min_size:
+                  continue
+              files.append('reimi/' + f)
+
           random.shuffle(files)
           open('gallery.json', 'w', encoding='utf-8').write(json.dumps(files, ensure_ascii=False))
-          print('gallery.json生成完了:', len(files), '枚')
+          print(f'gallery.json生成完了: {len(files)}枚（100KB未満は除外）')
           "
 
       - name: Commit and push

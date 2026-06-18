@@ -1006,7 +1006,7 @@ section{transition:none}
     <div class="outfit-archive-box">
       <p class="outfit-archive-label">年別アーカイブ一覧</p>
       <div style="display:flex;gap:.8rem;flex-wrap:wrap">
-        <a href="outfit_2023.html" class="outfit-archive-link">2023年 <span class="outfit-count">164枚</span></a>
+        <a href="outfit_2023.html" class="outfit-archive-link">2023年 <span class="outfit-count">163枚</span></a>
         <a href="outfit_2024.html" class="outfit-archive-link">2024年 <span class="outfit-count">195枚</span></a>
         <a href="outfit_2025.html" class="outfit-archive-link">2025年 <span class="outfit-count">197枚</span></a>
         <a href="outfit_2026.html" class="outfit-archive-link">2026年 <span class="outfit-count">93枚</span></a>
@@ -2581,6 +2581,27 @@ function applyOutfitCounts() {
     } else { node.childNodes.forEach(function(c){replaceInText(c,from,to);}); }
   }
   replaceInText(document.body, '648枚', total + '枚');
+
+  // 年別のoutfit-countを個別に更新
+  document.querySelectorAll('.outfit-archive-link').forEach(function(el) {
+    var href = el.getAttribute('href') || '';
+    var yearMatch = href.match(/outfit_(\d{4})\.html/);
+    if (!yearMatch) return;
+    var year = parseInt(yearMatch[1]);
+    var countEl = el.querySelector('.outfit-count');
+    if (countEl && OUTFIT_COUNTS[year]) countEl.textContent = OUTFIT_COUNTS[year] + '枚';
+  });
+
+  // outfit-year-countも年別に更新
+  document.querySelectorAll('.archive-card-link').forEach(function(el) {
+    var href = el.getAttribute('href') || '';
+    var yearMatch = href.match(/outfit_(\d{4})\.html/);
+    if (!yearMatch) return;
+    var year = parseInt(yearMatch[1]);
+    var countEl = el.querySelector('.outfit-year-count');
+    if (countEl && OUTFIT_COUNTS[year]) countEl.textContent = OUTFIT_COUNTS[year] + '枚';
+  });
+
   ['og:description','description','twitter:description'].forEach(function(n){
     var el = document.querySelector('meta[property="'+n+'"],meta[name="'+n+'"]');
     if(el) el.setAttribute('content', el.getAttribute('content').replace(/\d+枚/, total+'枚'));

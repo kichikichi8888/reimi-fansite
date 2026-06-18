@@ -92,6 +92,19 @@ jobs:
           # outfit-countの2026年枚数も更新
           index = re.sub(r'(outfit-count[^>]*>)\d+枚(</span>)', r'\g<1>' + str(total_2026) + r'枚\2', index)
 
+          # outfit-count（衣装コレクションセクションのリンク）
+          index = re.sub(
+              r'(outfit_2026\.html[^>]*>2026年 <span class="outfit-count">)\d+枚',
+              r'\g<1>' + str(total_2026) + r'枚',
+              index
+          )
+          # outfit-year-count（アーカイブカード）
+          index = re.sub(
+              r'(outfit-year-count">)\d+枚(</p>\s*</a>\s*<a href="videos_gif)',
+              r'\g<1>' + str(total_2026) + r'枚\2',
+              index
+          )
+
           with open('index.html', 'w', encoding='utf-8') as f:
               f.write(index)
 

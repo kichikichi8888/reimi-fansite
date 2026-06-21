@@ -1406,19 +1406,30 @@ window.addEventListener('scroll', function() {
   var nav = document.querySelector('nav');
   if (nav) nav.classList.toggle('scrolled', window.scrollY > 80);
 });
-// HERO RANDOM IMAGE
+// HERO + PROFILE RANDOM IMAGE
 fetch('gallery.json')
   .then(function(r){ return r.json(); })
   .then(function(imgs){
     if (!imgs || !imgs.length) return;
-    var src = imgs[Math.floor(Math.random() * imgs.length)];
+    var idx1 = Math.floor(Math.random() * imgs.length);
     var slide1 = document.querySelector('.hero-slide');
-    if (!slide1) return;
-    var img = document.createElement('img');
-    img.src = src;
-    img.alt = '堤礼実';
-    img.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:top';
-    slide1.appendChild(img);
+    if (slide1) {
+      var img1 = document.createElement('img');
+      img1.src = imgs[idx1];
+      img1.alt = '堤礼実';
+      img1.style.cssText = 'width:100%;height:100%;object-fit:cover;object-position:top';
+      slide1.appendChild(img1);
+    }
+    // プロフィール画像はヒーローと別の1枚を選ぶ
+    var profilePhoto = document.querySelector('.profile-photo');
+    if (profilePhoto && imgs.length > 1) {
+      var idx2;
+      do { idx2 = Math.floor(Math.random() * imgs.length); } while (idx2 === idx1);
+      var img2 = document.createElement('img');
+      img2.src = imgs[idx2];
+      img2.alt = '堤礼実 プロフィール';
+      profilePhoto.appendChild(img2);
+    }
   })
   .catch(function(){});
 

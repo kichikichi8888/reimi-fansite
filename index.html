@@ -2736,13 +2736,13 @@ function openGalleryLightbox(src, name, items, idx) {
     lb.id = 'gallery-lightbox';
     lb.style.cssText = 'display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);align-items:center;justify-content:center;flex-direction:column;gap:.8rem';
     lb.innerHTML = ''
-      + '<button id="glb-close" style="position:absolute;top:1.2rem;right:1.5rem;color:#c9a96e;font-size:2rem;background:none;border:none;cursor:pointer;line-height:1">&#x2715;</button>'
-      + '<div style="display:flex;align-items:center;gap:1rem;max-width:95vw">'
-      +   '<button id="glb-prev" style="color:#c9a96e;font-size:2rem;background:none;border:none;cursor:pointer;padding:.5rem;flex-shrink:0">&#8249;</button>'
-      +   '<img id="gallery-lightbox-img" style="max-width:85vw;max-height:85vh;object-fit:contain;border:1px solid rgba(201,169,110,.2)">'
-      +   '<button id="glb-next" style="color:#c9a96e;font-size:2rem;background:none;border:none;cursor:pointer;padding:.5rem;flex-shrink:0">&#8250;</button>'
+      + '<button id="glb-close" style="position:absolute;top:1.2rem;right:1.5rem;color:#c9a96e;font-size:2rem;background:none;border:none;cursor:pointer;line-height:1;z-index:10">&#x2715;</button>'
+      + '<div style="position:relative;display:flex;align-items:center;justify-content:center;max-width:95vw;max-height:90vh">'
+      +   '<button id="glb-prev" style="position:absolute;left:0;top:50%;transform:translateY(-50%);color:#c9a96e;font-size:2.5rem;background:rgba(0,0,0,.4);border:none;cursor:pointer;padding:.3rem .6rem;z-index:10;line-height:1">&#8249;</button>'
+      +   '<img id="gallery-lightbox-img" style="max-width:95vw;max-height:85vh;object-fit:contain;display:block">'
+      +   '<button id="glb-next" style="position:absolute;right:0;top:50%;transform:translateY(-50%);color:#c9a96e;font-size:2.5rem;background:rgba(0,0,0,.4);border:none;cursor:pointer;padding:.3rem .6rem;z-index:10;line-height:1">&#8250;</button>'
       + '</div>'
-      + '<span id="glb-counter" style="font-size:.7rem;color:#8a8480;letter-spacing:.1em"></span>';
+      + '<span id="glb-counter" style="font-size:.7rem;color:#8a8480;letter-spacing:.1em;margin-top:.5rem"></span>';
 
     document.body.appendChild(lb);
 

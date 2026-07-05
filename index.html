@@ -599,7 +599,7 @@ section{transition:none}
 .picks-item:hover .picks-overlay{opacity:1}
 .picks-item .picks-overlay span{font-size:var(--text-xs);letter-spacing:.08em;color:var(--gold-light)}
 .picks-badge{display:inline-block;font-size:var(--text-xs);letter-spacing:.15em;color:var(--gold);border:1px solid rgba(201,169,110,.3);padding:.2rem .7rem;margin-bottom:1rem}
-@media(max-width:600px){.picks-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.picks-grid{grid-template-columns:repeat(2,1fr)}}
 
 /* MEZAMASHI SPECIAL */
 .mezamashi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:8px;margin-top:1.5rem}
@@ -623,7 +623,7 @@ section{transition:none}
 .mz-modal-item:hover img{transform:scale(1.05)}
 .mz-more-btn{margin-top:1.5rem;background:none;border:1px solid rgba(201,169,110,.4);color:var(--gold);padding:.6rem 2rem;cursor:pointer;letter-spacing:.15em;font-size:var(--text-sm);transition:all .3s}
 .mz-more-btn:hover{background:rgba(201,169,110,.1)}
-@media(max-width:600px){.mezamashi-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.mezamashi-grid{grid-template-columns:repeat(2,1fr)}}
 
 /* SOREWA SPECIAL */
 .sorewa-grid{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:1.5rem}
@@ -635,7 +635,7 @@ section{transition:none}
 .sorewa-item.sw-loaded .sw-play{display:none}
 .sw-more-btn{margin-top:1.5rem;background:none;border:1px solid rgba(201,169,110,.4);color:var(--gold);padding:.6rem 2rem;cursor:pointer;letter-spacing:.15em;font-size:var(--text-sm);transition:all .3s}
 .sw-more-btn:hover{background:rgba(201,169,110,.1)}
-@media(max-width:600px){.sorewa-grid{grid-template-columns:repeat(3,1fr)}}
+@media(max-width:600px){.sorewa-grid{grid-template-columns:repeat(2,1fr)}}
 </style>
 </head>
 <body>
@@ -2722,21 +2722,73 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 // === GALLERY LIGHTBOX ===
-function openGalleryLightbox(src, name) {
+var _glbItems = [];
+var _glbIdx = 0;
+
+function openGalleryLightbox(src, name, items, idx) {
+  // itemsリストが渡された場合はそれを使う、なければ単体表示
+  _glbItems = items || [src];
+  _glbIdx = (idx !== undefined) ? idx : 0;
+
   var lb = document.getElementById('gallery-lightbox');
   if (!lb) {
     lb = document.createElement('div');
     lb.id = 'gallery-lightbox';
-    lb.style.cssText = 'display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);align-items:center;justify-content:center;cursor:zoom-out';
-    lb.innerHTML = '<button style="position:absolute;top:1.5rem;right:1.5rem;color:#c9a96e;font-size:2rem;background:none;border:none;cursor:pointer;line-height:1" onclick="document.getElementById(\'gallery-lightbox\').style.display=\'none\'">&#x2715;</button><img id="gallery-lightbox-img" style="max-width:90vw;max-height:90vh;object-fit:contain;border:1px solid rgba(201,169,110,.2)">';
-    lb.onclick = function(e) { if (e.target === lb) lb.style.display = 'none'; };
+    lb.style.cssText = 'display:none;position:fixed;inset:0;z-index:9999;background:rgba(0,0,0,.92);align-items:center;justify-content:center;flex-direction:column;gap:.8rem';
+    lb.innerHTML = ''
+      + '<button id="glb-close" style="position:absolute;top:1.2rem;right:1.5rem;color:#c9a96e;font-size:2rem;background:none;border:none;cursor:pointer;line-height:1">&#x2715;</button>'
+      + '<div style="display:flex;align-items:center;gap:1rem;max-width:95vw">'
+      +   '<button id="glb-prev" style="color:#c9a96e;font-size:2rem;background:none;border:none;cursor:pointer;padding:.5rem;flex-shrink:0">&#8249;</button>'
+      +   '<img id="gallery-lightbox-img" style="max-width:85vw;max-height:85vh;object-fit:contain;border:1px solid rgba(201,169,110,.2)">'
+      +   '<button id="glb-next" style="color:#c9a96e;font-size:2rem;background:none;border:none;cursor:pointer;padding:.5rem;flex-shrink:0">&#8250;</button>'
+      + '</div>'
+      + '<span id="glb-counter" style="font-size:.7rem;color:#8a8480;letter-spacing:.1em"></span>';
+
     document.body.appendChild(lb);
+
+    document.getElementById('glb-close').onclick = function() { lb.style.display = 'none'; };
+    document.getElementById('glb-prev').onclick = function(e) { e.stopPropagation(); glbNav(-1); };
+    document.getElementById('glb-next').onclick = function(e) { e.stopPropagation(); glbNav(1); };
+    lb.onclick = function(e) { if (e.target === lb) lb.style.display = 'none'; };
+
     document.addEventListener('keydown', function(e) {
+      if (lb.style.display === 'none') return;
       if (e.key === 'Escape') lb.style.display = 'none';
+      if (e.key === 'ArrowLeft') glbNav(-1);
+      if (e.key === 'ArrowRight') glbNav(1);
     });
+
+    // タッチスワイプ対応
+    var touchStartX = 0;
+    lb.addEventListener('touchstart', function(e) { touchStartX = e.touches[0].clientX; }, {passive:true});
+    lb.addEventListener('touchend', function(e) {
+      var diff = touchStartX - e.changedTouches[0].clientX;
+      if (Math.abs(diff) > 50) glbNav(diff > 0 ? 1 : -1);
+    }, {passive:true});
   }
-  document.getElementById('gallery-lightbox-img').src = src;
+
+  glbShow();
   lb.style.display = 'flex';
+}
+
+function glbShow() {
+  var src = _glbItems[_glbIdx];
+  document.getElementById('gallery-lightbox-img').src = typeof src === 'object' ? src.src || src : src;
+  var counter = document.getElementById('glb-counter');
+  if (_glbItems.length > 1) {
+    counter.textContent = (_glbIdx + 1) + ' / ' + _glbItems.length;
+  } else {
+    counter.textContent = '';
+  }
+  // 単体の場合は矢印を非表示
+  var showNav = _glbItems.length > 1;
+  document.getElementById('glb-prev').style.visibility = showNav ? 'visible' : 'hidden';
+  document.getElementById('glb-next').style.visibility = showNav ? 'visible' : 'hidden';
+}
+
+function glbNav(dir) {
+  _glbIdx = (_glbIdx + dir + _glbItems.length) % _glbItems.length;
+  glbShow();
 }
 
 // === MONTHLY PICKS ===
@@ -2796,12 +2848,13 @@ function openGalleryLightbox(src, name) {
     if (badge) badge.textContent = season + 'コーデ ' + picks.length + '選';
 
     grid.innerHTML = '';
-    picks.forEach(function(img) {
+    var picksSrcs = picks.map(function(p){return p.src;});
+    picks.forEach(function(img, idx) {
       var item = document.createElement('div');
       item.className = 'picks-item';
       item.innerHTML = '<img src="' + img.src + '" alt="' + img.alt + '" loading="lazy">'
         + '<div class="picks-overlay"><span>' + img.alt + '</span></div>';
-      item.onclick = function() { openGalleryLightbox(img.src, img.alt); };
+      item.onclick = (function(i){ return function(){ openGalleryLightbox(picks[i].src, picks[i].alt, picksSrcs, i); }; })(idx);
       grid.appendChild(item);
     });
   }
@@ -2823,12 +2876,13 @@ function renderMezamashiPicks() {
   }
   var picks = pool.slice(0, 10);
   grid.innerHTML = '';
-  picks.forEach(function(img) {
+  var mzSrcs = picks.map(function(p){return p.src;});
+  picks.forEach(function(img, idx) {
     var item = document.createElement('div');
     item.className = 'mezamashi-item';
     item.innerHTML = '<img src="' + img.src + '" alt="' + img.alt + '" loading="lazy">'
       + '<div class="mz-overlay"><span>' + img.alt + '</span></div>';
-    item.onclick = function() { openGalleryLightbox(img.src, img.alt); };
+    item.onclick = (function(i){ return function(){ openGalleryLightbox(picks[i].src, picks[i].alt, mzSrcs, i); }; })(idx);
     grid.appendChild(item);
   });
 }

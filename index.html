@@ -2760,10 +2760,18 @@ function openGalleryLightbox(src, name, items, idx) {
 
     // タッチスワイプ対応
     var touchStartX = 0;
-    lb.addEventListener('touchstart', function(e) { touchStartX = e.touches[0].clientX; }, {passive:true});
+    var touchStartY = 0;
+    lb.addEventListener('touchstart', function(e) {
+      touchStartX = e.touches[0].clientX;
+      touchStartY = e.touches[0].clientY;
+    }, {passive:true});
     lb.addEventListener('touchend', function(e) {
-      var diff = touchStartX - e.changedTouches[0].clientX;
-      if (Math.abs(diff) > 50) glbNav(diff > 0 ? 1 : -1);
+      var diffX = touchStartX - e.changedTouches[0].clientX;
+      var diffY = touchStartY - e.changedTouches[0].clientY;
+      // 横方向の移動が縦より大きく、50px以上のとき
+      if (Math.abs(diffX) > Math.abs(diffY) && Math.abs(diffX) > 50) {
+        glbNav(diffX > 0 ? 1 : -1);
+      }
     }, {passive:true});
   }
 

@@ -1,0 +1,25 @@
+name: Fix old links to tsutsumi-reimi-fansite.html
+
+on:
+  workflow_dispatch:
+
+jobs:
+  fix:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Replace old filename with index.html
+        run: |
+          find . -name "*.html" -not -path "./.git/*" | xargs sed -i 's|tsutsumi-reimi-fansite\.html|index.html|g'
+          echo "置換完了"
+          grep -r "tsutsumi-reimi-fansite" --include="*.html" | wc -l || echo "残存なし"
+
+      - name: Commit and push
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git diff --quiet || (git add -A && git commit -m "chore: tsutsumi-reimi-fansite.htmlをindex.htmlに修正" && git push)

@@ -4,9 +4,10 @@ on:
   push:
     paths:
       - 'outfit_2026.html'
+  workflow_dispatch:
 
 jobs:
-  update-count:
+  update:
     runs-on: ubuntu-latest
     permissions:
       contents: write
@@ -14,53 +15,103 @@ jobs:
     steps:
       - uses: actions/checkout@v4
 
-      - name: Compute count and update HTML
+      - name: Sync counts
         run: |
-          python3 - <<'PYEOF'
+          python3 - << 'PYEOF'
           import re
 
-          # ── outfit_2026.html から month-count を合計 ──
           with open('outfit_2026.html', encoding='utf-8') as f:
-              html_2026 = f.read()
+              html26 = f.read()
 
-          counts = re.findall(r'class="month-count">(\d+)枚', html_2026)
-          total_2026 = sum(int(c) for c in counts)
-          print(f'2026年: {total_2026}枚 (月別: {counts})')
+          months = ['01','02','03','04','05','06','07','08','09','10','11','12']
+          month_names = {'01':'1月','02':'2月','03':'3月','04':'4月','05':'5月','06':'6月',
+                         '07':'7月','08':'8月','09':'9月','10':'10月','11':'11月','12':'12月'}
 
-          # ── tsutsumi-reimi-fansite.html を更新 ──
-          with open('tsutsumi-reimi-fansite.html', encoding='utf-8') as f:
-              html = f.read()
+          total_2026 = 0
+          for m in months:
+              block_pat = re.compile(
+                  r'data-month="' + m + r'">(.*?)(?=<div class="month-block"|</div>\s*</div>\s*</div>\s*<div class="year-pagination")',
+                  re.DOTALL
+              )
+              block = block_pat.search(html26)
+              if not block:
+                  continue
+              count = len(re.findall(r'class="outfit-item"', block.group(1)))
+              if count == 0:
+                  continue
+              total_2026 += count
 
-          # OUTFIT_COUNTS の 2026行を書き換え
-          html = re.sub(r'(2026:\s*)\d+', rf'\g<1>{total_2026}', html)
+              html26 = re.sub(
+                  r"filterMonth\('" + m + r"'\)\">" + month_names[m] + r" \(\d+\)",
+                  f"filterMonth('{m}')\">{month_names[m]} ({count})",
+                  html26
+              )
+              html26 = re.sub(
+                  r'(data-month="' + m + r'".*?month-count">)\d+枚',
+                  lambda x: x.group(1) + str(count) + '枚',
+                  html26, flags=re.DOTALL, count=1
+              )
+              print(f'{month_names[m]}: {count}枚')
 
-          # 固定値の年別を読み取って合計を再計算
-          y2023 = int(re.search(r'2023:\s*(\d+)', html).group(1))
-          y2024 = int(re.search(r'2024:\s*(\d+)', html).group(1))
-          y2025 = int(re.search(r'2025:\s*(\d+)', html).group(1))
+          print(f'2026年合計: {total_2026}枚')
+
+          with open('outfit_2026.html', 'w', encoding='utf-8') as f:
+              f.write(html26)
+
+          html26 = open('outfit_2026.html', encoding='utf-8').read()
+          html26 = re.sub(r'全\d+枚 · クリックで拡大表示', f'全{total_2026}枚 · クリックで拡大表示', html26)
+          html26 = re.sub(r'2026年 · \d+枚', f'2026年 · {total_2026}枚', html26)
+          with open('outfit_2026.html', 'w', encoding='utf-8') as f:
+              f.write(html26)
+
+          with open('index.html', encoding='utf-8') as f:
+              index = f.read()
+
+          y2023 = int(re.search(r'2023:\s*(\d+)', index).group(1))
+          y2024 = int(re.search(r'2024:\s*(\d+)', index).group(1))
+          y2025 = int(re.search(r'2025:\s*(\d+)', index).group(1))
           new_total = y2023 + y2024 + y2025 + total_2026
-          print(f'合計: {y2023}+{y2024}+{y2025}+{total_2026} = {new_total}枚')
 
-          # 静的テキストの合計枚数を置換（「644枚」など数字+枚 のパターン）
-          # 対象箇所だけ安全に置換するため既存の合計値を探して置換
-          old_total_m = re.search(r'衣装(\d+)枚', html)
+          # OUTFIT_COUNTSの2026を正確に更新（var OUTFIT_COUNTS直後の2026:のみ）
+          index = re.sub(
+              r'(var OUTFIT_COUNTS\s*=\s*\{[^}]*2026:\s*)\d+',
+              r'\g<1>' + str(total_2026),
+              index, flags=re.DOTALL
+          )
+
+          # 合計枚数を更新
+          old_total_m = re.search(r'衣装(\d+)枚', index)
           if old_total_m:
               old_total = old_total_m.group(1)
-              html = html.replace(f'{old_total}枚', f'{new_total}枚')
-              print(f'静的テキスト: {old_total}枚 → {new_total}枚 に置換')
+              if old_total != str(new_total):
+                  index = index.replace(f'{old_total}枚', f'{new_total}枚')
+                  print(f'合計: {old_total}枚 → {new_total}枚')
 
-          with open('tsutsumi-reimi-fansite.html', 'w', encoding='utf-8') as f:
-              f.write(html)
+          # outfit-countの2026年枚数
+          index = re.sub(
+              r'(outfit_2026\.html[^>]*>2026年 <span class="outfit-count">)\d+枚',
+              r'\g<1>' + str(total_2026) + r'枚',
+              index
+          )
+          # outfit-year-count
+          index = re.sub(
+              r'(outfit-year-count">)\d+枚(</p>\s*</a>\s*<a href="videos_gif)',
+              r'\g<1>' + str(total_2026) + r'枚\2',
+              index
+          )
+
+          with open('index.html', 'w', encoding='utf-8') as f:
+              f.write(index)
 
           print('完了')
           PYEOF
 
-      - name: Commit and push if changed
+      - name: Commit and push
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git diff --quiet || (
-            git add tsutsumi-reimi-fansite.html &&
-            git commit -m "chore: 2026年衣装枚数を自動更新" &&
+            git add outfit_2026.html index.html &&
+            git commit -m "chore: 衣装枚数を自動更新" &&
             git push
           )
